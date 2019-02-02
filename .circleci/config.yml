@@ -22,7 +22,7 @@ jobs:
       - run: 
           name: "Build docker image and push to docker hub"
           command: |
-              cp Dockerfile.Production Dockerfile
+              cp Dockerfile.production Dockerfile
               docker build -t anupan/nodejs-express:lastest .
               docker push anupan/nodejs-express:lastest
       - run: echo done

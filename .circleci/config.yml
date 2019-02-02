@@ -37,5 +37,4 @@ jobs:
                 etlweather/gaucho upgrade $RANCHER_EXAMPLE_NODE \
                 --imageUuid 'docker:anupan/nodejs-express:latest' \
                 --batch_size 3 --start_first
-                --auto_complete --timeout 600 \
-                /
+                --auto_complete --timeout 600 

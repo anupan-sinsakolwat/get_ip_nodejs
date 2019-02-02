@@ -17,3 +17,12 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
       - run: echo Done
+      - setup_remote_docker
+      - run: docker login -u $DOCKER_USRENAME -p $DOCKER_PASSWORD
+      - run: 
+          name: "Build docker image and push to docker hub"
+          command: |
+              cp Dockerfile.Production Dockerfile
+              docker build -t anupan/nodejs-express:lastest .
+              docker push anupan/nodejs-express:lastest
+      - run: echo done

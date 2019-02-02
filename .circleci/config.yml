@@ -12,6 +12,7 @@ jobs:
             # fallback 
             - v1-dependencies-
       - run: npm install
+      - run: npm test
       - save_cache:
           paths:
             - node_modules

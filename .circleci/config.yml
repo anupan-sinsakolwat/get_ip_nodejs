@@ -55,13 +55,13 @@ jobs:
       #           --auto_complete --timeout 600  \
   test:
     steps:
-      - run: "echo test"
+      - run: echo test
   ship:
     steps:
-      - run: "echo ship"
+      - run: echo ship
   deploy:
     steps:
-      - run: "echo deploy"
+      - run: echo deploy
 
 workflows:
   version: 2

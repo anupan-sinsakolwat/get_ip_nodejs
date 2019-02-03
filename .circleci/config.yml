@@ -1,40 +1,56 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
 version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:8.11.1-stretch
+      # specify the version you desire here
+      - image: circleci/node:7.10
+      
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mongo:3.4.4
+
     working_directory: ~/repo
+
     steps:
       - checkout
+
+      # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            # fallback 
-            - v1-dependencies-
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
       - run: npm install
-      - run: npm test
+
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-      - run: echo Done
-      - setup_remote_docker
-      - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-      - run: 
-          name: "Build docker image and push to docker hub"
+        
+      # run tests!
+      - run: npm test
+      - run:
+          name: "Upload to docker hub"
           command: |
-              cp Dockerfile.production Dockerfile
-              docker build -t anupan/nodejs-express:latest .
-              docker push anupan/nodejs-express:latest
-      - run: echo done
-      - run: 
-          name: "Call to rancher to deploys"
-          command: |
-              docker run --rm -it \
-                -e CATTLE_ACCESS_KEY="$CATTLE_ACCESS_KEY" \
-                -e CATTLE_SECRET_KEY="$CATTLE_SECRET_KEY" \
-                -e CATTLE_URL="$CATTLE_URL" \
-                etlweather/gaucho upgrade $RANCHER_EXAMPLE_NODE \
-                --imageUuid 'docker:anupan/nodejs-express:latest' \
-                --batch_size 1 --start_first \
-                --auto_complete --timeout 600  \
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          docker build -t anupan/get_ip . /
+          docker push anupan/get_ip:latest
+      # - run:
+      #     name: "Deploy to rancher"
+      #     command: |
+      #     docker run --rm -it \
+      #           -e CATTLE_ACCESS_KEY="$CATTLE_ACCESS_KEY" \
+      #           -e CATTLE_SECRET_KEY="$CATTLE_SECRET_KEY" \
+      #           -e CATTLE_URL="$CATTLE_URL" \
+      #           etlweather/gaucho upgrade $RANCHER_EXAMPLE_NODE \
+      #           --imageUuid 'docker:anupan/get_ip:latest' \
+      #           --batch_size 1 --start_first \
+      #           --auto_complete --timeout 600  \
+
+

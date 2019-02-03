@@ -38,9 +38,9 @@ jobs:
       - run:
           name: "Upload to docker hub"
           command: |
-            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-            docker build -t anupan/get_ip . /
-            docker push anupan/get_ip:latest
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD \
+            docker build -t anupan/get_ip . \
+            docker push anupan/get_ip:latest \
       # - run:
       #     name: "Deploy to rancher"
       #     command: |

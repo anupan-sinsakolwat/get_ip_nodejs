@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/node:8.15
+      - image: circleci/node:7.10
       
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -34,9 +34,7 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
         
       # run tests!
-  test:
       - run: npm test
-  ship:
       - setup_remote_docker
       - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       - run:
@@ -44,35 +42,39 @@ jobs:
           command: |
             docker build -t anupan/get_ip . 
             docker push anupan/get_ip:latest 
+      # - run:
+      #     name: "Deploy to rancher"
+      #     command: |
+      #       docker run --rm -it \
+      #           -e CATTLE_ACCESS_KEY="$CATTLE_ACCESS_KEY" \
+      #           -e CATTLE_SECRET_KEY="$CATTLE_SECRET_KEY" \
+      #           -e CATTLE_URL="$CATTLE_URL" \
+      #           etlweather/gaucho upgrade $RANCHER_EXAMPLE_NODE \
+      #           --imageUuid 'docker:anupan/get_ip:latest' \
+      #           --batch_size 1 --start_first \
+      #           --auto_complete --timeout 600  \
+  test:
+    - run: "echo test"
+  ship:
+    - run: "echo ship"
   deploy:
-      - run:
-          name: "Deploy to rancher"
-          command: |
-            docker run --rm -it \
-                -e CATTLE_ACCESS_KEY="$CATTLE_ACCESS_KEY" \
-                -e CATTLE_SECRET_KEY="$CATTLE_SECRET_KEY" \
-                -e CATTLE_URL="$CATTLE_URL" \
-                etlweather/gaucho upgrade $RANCHER_EXAMPLE_NODE \
-                --imageUuid 'docker:anupan/get_ip:latest' \
-                --batch_size 1 --start_first \
-                --auto_complete --timeout 600  \
+    - run: "echo deploy"
 
-# workflows:
-#   version: 2
-#   build_test_ship_deploy:
-#     jobs: 
-#       - build
-#       - test:
-#           requires:
-#             - build
-#       - ship:
-#           requires:
-#             - build
-#             - test
-#       - deploy:
-#           type: approval
-#           requires: 
-#             - build
-#             - test
-#             - ship
-
+workflows:
+  version: 2
+  build_test_ship_deploy:
+    jobs: 
+      - build
+      - test:
+          requires:
+            - build
+      - ship:
+          requires:
+            - build
+            - test
+      - deploy:
+          type: approval
+          requires: 
+            - build
+            - test
+            - ship

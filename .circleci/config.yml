@@ -160,7 +160,7 @@ workflows:
       - ship:
           requires:
             - build
-            - test
+            # - test
       - deploy:
           type: approval
           requires: 

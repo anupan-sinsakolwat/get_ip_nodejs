@@ -42,16 +42,16 @@ jobs:
           command: |
             docker build -t anupan/get_ip . 
             docker push anupan/get_ip:latest 
-      # - run:
-      #     name: "Deploy to rancher"
-      #     command: |
-      #       docker run --rm -it \
-      #           -e CATTLE_ACCESS_KEY="$CATTLE_ACCESS_KEY" \
-      #           -e CATTLE_SECRET_KEY="$CATTLE_SECRET_KEY" \
-      #           -e CATTLE_URL="$CATTLE_URL" \
-      #           etlweather/gaucho upgrade $RANCHER_EXAMPLE_NODE \
-      #           --imageUuid 'docker:anupan/get_ip:latest' \
-      #           --batch_size 1 --start_first \
-      #           --auto_complete --timeout 600  \
+      - run:
+          name: "Deploy to rancher"
+          command: |
+            docker run --rm -it \
+                -e CATTLE_ACCESS_KEY="$CATTLE_ACCESS_KEY" \
+                -e CATTLE_SECRET_KEY="$CATTLE_SECRET_KEY" \
+                -e CATTLE_URL="$CATTLE_URL" \
+                etlweather/gaucho upgrade $RANCHER_EXAMPLE_NODE \
+                --imageUuid 'docker:anupan/get_ip:latest' \
+                --batch_size 1 --start_first \
+                --auto_complete --timeout 600  \
 
 

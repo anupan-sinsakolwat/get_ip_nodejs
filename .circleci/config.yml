@@ -54,10 +54,13 @@ jobs:
       #           --batch_size 1 --start_first \
       #           --auto_complete --timeout 600  \
   test:
+    steps:
       - run: "echo test"
   ship:
+    steps:
       - run: "echo ship"
   deploy:
+    steps:
       - run: "echo deploy"
 
 workflows:
